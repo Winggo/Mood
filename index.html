@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        {% if not query %}
+        <h1>No searched entered</h1>
+        {% endif %}
+
+        {% if query %}
+        <h1>Tweets on {{query}}</h1>
+        <h3>{{numTweets}} Tweets found</h3>
+
+            {% for tweet in tweets%}
+                <p>{{tweet}}</p>
+            {% endfor %}
+
+        {% endif %}
+    </body>
+</html>
