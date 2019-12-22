@@ -1,11 +1,11 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Response
 import requests
+import json
+from flask_cors import CORS
 
 app = Flask(__name__, template_folder='.')
+CORS(app)
 
-@app.route('/', methods=['GET'])
-def land():
-    return render_template('index.html')
 
 @app.route('/<query>', methods=['GET'])
 def search(query):
@@ -36,8 +36,17 @@ def search(query):
                 fullText.add('RT: ' + tweet['retweeted_status']['full_text'])
             else:
                 fullText.add(tweet['full_text'])
-
-    return render_template('index.html', query=query, tweets=fullText, numTweets=len(fullText))
+    
+    data = {
+        'query': query,
+        'tweets': list(fullText),
+        'numTweets': len(fullText),
+    }
+    resBody = json.dumps(data)
+    res = Response(resBody, status=200, mimetype='application/json')
+    res.headers['host'] = 'localhost:5000'
+    return res
+    # return render_template('index.html', query=query, tweets=fullText, numTweets=len(fullText))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='localhost', debug=True)
